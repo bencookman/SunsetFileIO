@@ -139,6 +139,20 @@ function add_field!(node_set, field, values)
     return nothing
 end
 
+dropcol(M::AbstractMatrix, j) = M[:, deleteat!(collect(axes(M, 2)), j)]
+
+function remove_field!(node_set, field_name)
+    if !check_field(node_set, field_name)
+        printstyled("node set does not contain this field\n", color = :red)
+        return nothing
+    end
+
+    i_field = get_field_index(node_set, field_name)
+    popat!(node_set.fields, i_field)
+    node_set.set = dropcol(node_set.set, i_field)
+    return nothing
+end
+
 function copy_node_set(node_set)
     return NodeSet(copy(node_set.fields), copy(node_set.set))
 end

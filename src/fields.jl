@@ -69,7 +69,23 @@ IPART_fields(D) = Field[
     n_fields[1:D]...,
     s_field,
 ]
-flame_fields(D, Y) = Field[
+flame_fields(D, Y; has_hrr = true) = begin
+    fields = Field[
+        position_fields[1:D]...,
+        u_fields[1:D]...,
+        vort_field,
+        rho_field,
+        rhoE_field,
+        T_field,
+        p_field,
+    ]
+    if has_hrr
+        push!(fields, hrr_field)
+    end
+    push!(fields, Y_fields(Y)...)
+    return fields
+end
+init_flame_fields(D, Y) = Field[
     position_fields[1:D]...,
     u_fields[1:D]...,
     vort_field,

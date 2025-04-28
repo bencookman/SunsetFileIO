@@ -40,9 +40,25 @@ flame
 7   rhoE
 8   T
 9   p
-10  Y1
-11  Y2 
-12  etc
+10  hrr
+11  Y1
+12  Y2 
+13  etc
+
+init_flame.in
+---
+1   x
+2   y
+3   u
+4   v
+5   vort
+6   rho
+7   rhoE
+8   T
+9   p
+11  Y1
+12  Y2 
+13  etc
 """
 module SunsetFileIO
 
@@ -86,6 +102,7 @@ export
     fields_fields,
     IPART_fields,
     flame_fields,
+    init_flame_fields,
 
     ### node_sets.jl
     NodeSet,
@@ -100,6 +117,7 @@ export
     set_field_by_name!,
     set_positions!,
     add_field!,
+    remove_field!,
     copy_node_set,
 
     ### iteration_indexing.jl
@@ -135,10 +153,12 @@ export
     nodes_file_path,
     fields_file_path,
     flame_file_path,
+    read_nodes_file,
     read_nodes_files,
     read_fields_files,
     read_IPART_file,
     read_flames_file,
+    read_init_flame_file,
     read_vtu_file,
     read_nodes_and_fields_files,
 

@@ -156,34 +156,36 @@ function ask_reflect()
         throw(ErrorException("Must be run in interactive mode"))
     end
 
-    args_reflect = Any[false, [0.0, 0.0], [0.0, 1.0]]
+    # args_reflect = Any[false, [0.0, 0.0], [0.0, 1.0]]
+    args_reflect = Any[false]
 
     printstyled("Do we want to do a reflection\n", color = :blue)
     temp_str = readline()
     arg_do_reflect = parse(Bool, temp_str)
     args_reflect[1] = arg_do_reflect
-    if !arg_do_reflect
-        return args_reflect
-    end
+    
+    # if !arg_do_reflect
+    #     return args_reflect
+    # end
 
-    printstyled("Give the x coordinate of the first point in the line of reflection\n", color = :blue)
-    temp_str = readline()
-    arg_reflect_p1_x = parse(Float64, temp_str)
+    # printstyled("Give the x coordinate of the first point in the line of reflection\n", color = :blue)
+    # temp_str = readline()
+    # arg_reflect_p1_x = parse(Float64, temp_str)
 
-    printstyled("Give the y coordinate of the first point in the line of reflection\n", color = :blue)
-    temp_str = readline()
-    arg_reflect_p1_y = parse(Float64, temp_str)
+    # printstyled("Give the y coordinate of the first point in the line of reflection\n", color = :blue)
+    # temp_str = readline()
+    # arg_reflect_p1_y = parse(Float64, temp_str)
 
-    printstyled("Give the x coordinate of the second point in the line of reflection\n", color = :blue)
-    temp_str = readline()
-    arg_reflect_p2_x = parse(Float64, temp_str)
+    # printstyled("Give the x coordinate of the second point in the line of reflection\n", color = :blue)
+    # temp_str = readline()
+    # arg_reflect_p2_x = parse(Float64, temp_str)
 
-    printstyled("Give the y coordinate of the second point in the line of reflection\n", color = :blue)
-    temp_str = readline()
-    arg_reflect_p2_y = parse(Float64, temp_str)
+    # printstyled("Give the y coordinate of the second point in the line of reflection\n", color = :blue)
+    # temp_str = readline()
+    # arg_reflect_p2_y = parse(Float64, temp_str)
 
-    args_reflect[2] = [arg_reflect_p1_x, arg_reflect_p1_y]
-    args_reflect[3] = [arg_reflect_p2_x, arg_reflect_p2_y]
+    # args_reflect[2] = [arg_reflect_p1_x, arg_reflect_p1_y]
+    # args_reflect[3] = [arg_reflect_p2_x, arg_reflect_p2_y]
 
     return args_reflect
 end

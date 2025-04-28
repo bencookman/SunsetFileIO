@@ -77,6 +77,7 @@ nice_field_titles = Dict(
     "p" => "Pressure",
     "hrr" => "Heat Release Rate",
     "proc" => "Processor",
+    "vol" => "Point Volume",
 )
 
 function get_nice_field_title(field_name :: String)
@@ -90,7 +91,7 @@ function get_nice_field_title(names)
     names_title = get_nice_field_title(names[1])
     if length(names) > 1
         if names[1] in axes_strings
-            names_title = "Coordinate"
+            names_title = "Position"
         elseif names[1] in u_strings
             names_title = "Velocity"
         elseif names[1] in n_strings
@@ -130,7 +131,7 @@ function write_vtu_point(out_file, node_set)
     write(out_file, vtu_start_points)
 
     positions = zip_array(get_positions(node_set))
-    push!(positions, zeros(Float32, length(positions[1])))
+    # push!(positions, zeros(Float32, length(positions[1])))
     positions = zip_array([Float32.(axis_array) for axis_array in positions])
     write_vtu_data_array(out_file, "Float32", "Points", positions)
 
@@ -159,7 +160,18 @@ function write_vtu_cells(out_file, node_set)
     write(out_file, vtu_end_cells)    
 end
 
+"""
+Writes the node_set data to path at `out_file_path`, adding a third dimension to vector data if needed
+"""
 function open_and_write_vtu(out_file_path, node_set)
+    # Add a third dimension if two-dimensional
+    D = check_position(node_set)
+    if D == 2
+        check_field(node_set, axes_strings[1]) && add_field!(node_set, position_fields[3], zeros(length(node_set)))
+        check_field(node_set, u_strings[1]) && add_field!(node_set, u_fields[3], zeros(length(node_set)))
+        check_field(node_set, n_strings[1]) && add_field!(node_set, n_fields[3], zeros(length(node_set)))
+    end
+
     open(out_file_path, "w") do out_file
         ## Beginning stuff
         write(out_file, vtu_start)

@@ -48,7 +48,7 @@ function cartesian_interpolate(
             continue
         end
         field_values = get_field_by_name(node_set, field.name)
-        values_mesh = si.griddata(xy, field_values, (x_mesh, y_mesh), method = interp_method)
+        values_mesh = si.griddata(xy, field_values, (x_mesh, y_mesh), method = interp_method, rescale = true)
         cart_values = vec(values_mesh)
 
         # Remove NaNs
