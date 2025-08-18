@@ -16,9 +16,11 @@ Y_string(i_Y) = string("Y", i_Y)
 ω_string(i_Y) = string("ω", i_Y)
 i_strings = [string("i_", axes_strings[i_axis]) for i_axis in 1:3]
 
+index_field = Field("i", Int64)
 position_fields = [Field(axes_strings[i_axis], Float64) for i_axis in 1:3]
 s_field = Field("s", Float64)
 h_field = Field("h", Float64)
+h_small_field = Field("h_small", Float64)
 type_field = Field("type", Int64)
 n_fields = [Field(n_strings[i_axis], Float64) for i_axis in 1:3]
 proc_field = Field("proc", Int64)
@@ -39,12 +41,21 @@ s_interp_field = Field("s interp", Float64)
 node_linkage_field = Field("node_linkage", Vector{Float64})
 vol_field = Field("vol", Float64)
 
-nodes_fields(D) = Field[
-    position_fields[1:D]...,
-    s_field,
-    h_field,
-    type_field,
-]
+nodes_fields(D; has_index = true, has_h_small = true) = begin
+    fields = Field[
+        position_fields[1:D]...,
+        s_field,
+        h_field,
+    ]
+    if has_index
+        fields = [index_field, fields...]
+    end
+    if has_h_small
+        fields = [fields..., h_small_field]
+    end
+    fields = [fields..., type_field]
+    return fields
+end
 fields_fields(D, Y; has_ω = true, has_vol = true) = begin
     fields = Field[
         rho_field,
@@ -63,12 +74,18 @@ fields_fields(D, Y; has_ω = true, has_vol = true) = begin
     end
     return fields
 end
-IPART_fields(D) = Field[
-    position_fields[1:D]...,
-    type_field,
-    n_fields[1:D]...,
-    s_field,
-]
+IPART_fields(D; has_index = true) = begin
+    fields = Field[
+        position_fields[1:D]...,
+        type_field,
+        n_fields[1:D]...,
+        s_field,
+    ]
+    if has_index
+        fields = [index_field, fields...]
+    end
+    return fields
+end
 flame_fields(D, Y; has_hrr = true) = begin
     fields = Field[
         position_fields[1:D]...,
