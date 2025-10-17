@@ -37,24 +37,26 @@ function read_fields_files(fields_dir, D, Y, n_cores, i_frame; has_ω = true, ha
     return join_node_sets(node_sets...)
 end
 
-function read_IPART_file(file_path, D, n_line_skip)
-    node_set = read_file(file_path, IPART_fields(D), n_line_skip)
+function read_IPART_file(file_path, D, n_line_skip; has_index = true)
+    node_set = read_file(file_path, IPART_fields(D; has_index = has_index), n_line_skip)
     # Add in the nodes which are missing
+    i = get_field_by_name(node_set, "i")
     x = get_field_by_name(node_set, "x")
     y = get_field_by_name(node_set, "y")
     type = get_field_by_name(node_set, "type")
     n_x = get_field_by_name(node_set, "n_x")
     n_y = get_field_by_name(node_set, "n_y")
     s = get_field_by_name(node_set, "s")
-    indices = findall(t_val -> t_val < 999 && t_val > -1, type)
-    for i_node in indices
+    bdry_set_indices = findall(t_val -> t_val < 999 && t_val > -1, type)
+    for i_bdry_set in bdry_set_indices
+        i_bdry = i[i_bdry_set]
         new_fd_set = FieldValue[
-            x[i_node] + 1 * s[i_node] * n_x[i_node]    y[i_node] + 1 * s[i_node] * n_y[i_node]    -1    0.0    0.0    s[i_node];
-            x[i_node] + 2 * s[i_node] * n_x[i_node]    y[i_node] + 2 * s[i_node] * n_y[i_node]    -2    0.0    0.0    s[i_node];
-            x[i_node] + 3 * s[i_node] * n_x[i_node]    y[i_node] + 3 * s[i_node] * n_y[i_node]    -3    0.0    0.0    s[i_node];
-            x[i_node] + 4 * s[i_node] * n_x[i_node]    y[i_node] + 4 * s[i_node] * n_y[i_node]    -4    0.0    0.0    s[i_node];
+            i_bdry + 1    x[i_bdry_set] + 1 * s[i_bdry_set] * n_x[i_bdry_set]    y[i_bdry_set] + 1 * s[i_bdry_set] * n_y[i_bdry_set]    -1    0.0    0.0    s[i_bdry_set];
+            i_bdry + 2    x[i_bdry_set] + 2 * s[i_bdry_set] * n_x[i_bdry_set]    y[i_bdry_set] + 2 * s[i_bdry_set] * n_y[i_bdry_set]    -2    0.0    0.0    s[i_bdry_set];
+            i_bdry + 3    x[i_bdry_set] + 3 * s[i_bdry_set] * n_x[i_bdry_set]    y[i_bdry_set] + 3 * s[i_bdry_set] * n_y[i_bdry_set]    -3    0.0    0.0    s[i_bdry_set];
+            i_bdry + 4    x[i_bdry_set] + 4 * s[i_bdry_set] * n_x[i_bdry_set]    y[i_bdry_set] + 4 * s[i_bdry_set] * n_y[i_bdry_set]    -4    0.0    0.0    s[i_bdry_set];
         ]
-        node_set = join_node_sets(node_set, NodeSet(IPART_fields(2), new_fd_set))
+        node_set = join_node_sets(node_set, NodeSet(IPART_fields(D; has_index = has_index), new_fd_set))
     end
     return node_set
 end
