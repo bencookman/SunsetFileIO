@@ -68,16 +68,16 @@ nice_field_titles = Dict(
     [axis_string => axis_string for axis_string in axes_strings]...,
     [u_string => u_string for u_string in u_strings]...,
     [n_string => n_string for n_string in n_strings]...,
-    "s" => "Node Spacing",
-    "h" => "Stencil Size",
+    "s" => "Node Spacing (m)",
+    "h" => "Stencil Size (m)",
     "type" => "Node Type",
-    "rho" => "Density",
-    "vort" => "Vorticity Scalar",
-    "T" => "Temperature",
-    "p" => "Pressure",
-    "hrr" => "Heat Release Rate",
+    "rho" => "Density (kg / m³)",
+    "vort" => "Vorticity Scalar (1 / m)",
+    "T" => "Temperature (K)",
+    "p" => "Pressure (Pa)",
+    "hrr" => "Heat Release Rate (W / m³)",
     "proc" => "Processor",
-    "vol" => "Point Volume",
+    "vol" => "Point Volume (m³)",
 )
 
 function get_nice_field_title(field_name :: String)
@@ -91,9 +91,9 @@ function get_nice_field_title(names)
     names_title = get_nice_field_title(names[1])
     if length(names) > 1
         if names[1] in axes_strings
-            names_title = "Position"
+            names_title = "Position (m)"
         elseif names[1] in u_strings
-            names_title = "Velocity"
+            names_title = "Velocity (m / s)"
         elseif names[1] in n_strings
             names_title = "Boundary Normal"
         else
