@@ -11,6 +11,7 @@ end
 
 axes_strings = ["x", "y", "z"]
 u_strings = [string("u_", axes_strings[i_axis]) for i_axis in 1:3]
+u_moving_strings = [string("u_moving_", axes_strings[i_axis]) for i_axis in 1:3]
 n_strings = [string("n_", axes_strings[i_axis]) for i_axis in 1:3]
 Y_string(i_Y) = string("Y", i_Y)
 ω_string(i_Y) = string("ω", i_Y)
@@ -27,6 +28,7 @@ proc_field = Field("proc", Int64)
 
 rho_field = Field("rho", Float64)
 u_fields = [Field(u_strings[i_axis], Float64) for i_axis in 1:3]
+u_moving_fields = [Field(u_moving_strings[i_axis], Float64) for i_axis in 1:3]
 vort_field = Field("vort", Float64)
 T_field = Field("T", Float64)
 p_field = Field("p", Float64)
@@ -42,30 +44,31 @@ node_linkage_field = Field("node_linkage", Vector{Float64})
 vol_field = Field("vol", Float64)
 
 nodes_fields(D; has_index = true, has_h_small = true) = begin
-    fields = Field[
-        position_fields[1:D]...,
-        s_field,
-        h_field,
-    ]
+    fields = Field[]
     if has_index
-        fields = [index_field, fields...]
+        push!(fields, index_field)
     end
+    push!(fields, position_fields[1:D]...)
+    push!(fields, s_field)
+    push!(fields, h_field)
     if has_h_small
-        fields = [fields..., h_small_field]
+        push!(fields, h_small_field)
     end
-    fields = [fields..., type_field]
+    push!(fields, type_field)
     return fields
 end
-fields_fields(D, Y; has_ω = true, has_vol = true) = begin
-    fields = Field[
-        rho_field,
-        u_fields[1:D]...,
-        vort_field,
-        T_field,
-        p_field,
-        hrr_field,
-        Y_fields(Y)...,
-    ]
+fields_fields(D, Y; has_ω = true, has_vol = true, has_moving_frame = true) = begin
+    fields = Field[]
+    push!(fields, rho_field)
+    push!(fields, u_fields[1:D]...)
+    if has_moving_frame
+        push!(fields, u_moving_fields[1:D]...)
+    end
+    push!(fields, vort_field)
+    push!(fields, T_field)
+    push!(fields, p_field)
+    push!(fields, hrr_field)
+    push!(fields, Y_fields(Y)...)
     if has_ω
         push!(fields, ω_fields(Y)...)
     end

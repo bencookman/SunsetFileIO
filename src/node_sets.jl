@@ -10,6 +10,7 @@ function stitch_node_sets(node_sets...)
     if !allequal([length(node_set) for node_set in node_sets_copies])
         throw(ArgumentError("These node sets contain different numbers of nodes"))
     end
+
     # Only pick out each unique field once, prioritising values from earlier node sets
     old_fields = [node_set.fields for node_set in node_sets_copies]
     old_sets = [node_set.set for node_set in node_sets_copies]

@@ -55,7 +55,7 @@ end
 
 function group_names(node_set, names)
     grouped_names = Any[]
-    for field_name_group in [axes_strings, u_strings, n_strings]
+    for field_name_group in [axes_strings, u_strings, u_moving_strings, n_strings]
         if !all([!check_field(node_set, field_name) for field_name in field_name_group])      # If we have any of this data, add those fields
             push!(grouped_names, filter(name -> name in field_name_group, names))
             filter!(name -> !(name in field_name_group), names)
@@ -67,6 +67,7 @@ end
 nice_field_titles = Dict(
     [axis_string => axis_string for axis_string in axes_strings]...,
     [u_string => u_string for u_string in u_strings]...,
+    [u_moving_string => u_moving_string for u_moving_string in u_moving_strings]...,
     [n_string => n_string for n_string in n_strings]...,
     "s" => "Node Spacing (m)",
     "h" => "Stencil Size (m)",
@@ -94,6 +95,8 @@ function get_nice_field_title(names)
             names_title = "Position (m)"
         elseif names[1] in u_strings
             names_title = "Velocity (m / s)"
+        elseif names[1] in u_moving_strings
+            names_title = "Moving Frame Velocity (m / s)"
         elseif names[1] in n_strings
             names_title = "Boundary Normal"
         else
@@ -169,6 +172,7 @@ function open_and_write_vtu(out_file_path, node_set)
     if D == 2
         check_field(node_set, axes_strings[1]) && add_field!(node_set, position_fields[3], zeros(length(node_set)))
         check_field(node_set, u_strings[1]) && add_field!(node_set, u_fields[3], zeros(length(node_set)))
+        check_field(node_set, u_moving_strings[1]) && add_field!(node_set, u_moving_fields[3], zeros(length(node_set)))
         check_field(node_set, n_strings[1]) && add_field!(node_set, n_fields[3], zeros(length(node_set)))
     end
 

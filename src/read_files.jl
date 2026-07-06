@@ -28,10 +28,10 @@ function read_nodes_files(fields_dir, D, n_cores; has_index = true, has_h_small 
     return join_node_sets(node_sets...)
 end
 
-function read_fields_files(fields_dir, D, Y, n_cores, i_frame; has_ω = true, has_vol = true)
+function read_fields_files(fields_dir, D, Y, n_cores, i_frame; has_ω = true, has_vol = true, has_moving_frame = true)
     node_sets = NodeSet[]
     for i_core in 0:(n_cores - 1)
-        new_node_set = read_file(fields_file_path(fields_dir, i_core, i_frame), fields_fields(D, Y; has_ω = has_ω, has_vol = has_vol), 5)
+        new_node_set = read_file(fields_file_path(fields_dir, i_core, i_frame), fields_fields(D, Y; has_ω = has_ω, has_vol = has_vol, has_moving_frame = has_moving_frame), 5)
         push!(node_sets, new_node_set)
     end
     return join_node_sets(node_sets...)
@@ -75,21 +75,21 @@ function read_init_flame_file(path, D, Y)
 end
 
 
+# Not yet implemented
 function read_vtu_file()
-
 end
 
 
 
 
-function read_nodes_and_fields_files(fields_dir, D, Y, n_cores, i_frame; has_ω = true, has_vol = true, has_index = true, has_h_small = true)
+function read_nodes_and_fields_files(fields_dir, D, Y, n_cores, i_frame; has_ω = true, has_vol = true, has_index = true, has_h_small = true, has_moving_frame = true)
     node_set = read_nodes_files(fields_dir, D, n_cores; has_index = has_index, has_h_small = has_h_small)
-    fields_set = read_fields_files(fields_dir, D, Y, n_cores, i_frame; has_ω = has_ω, has_vol = has_vol)
+    fields_set = read_fields_files(fields_dir, D, Y, n_cores, i_frame; has_ω = has_ω, has_vol = has_vol, has_moving_frame = has_moving_frame)
     return stitch_node_sets(node_set, fields_set)
 end
 
-function read_nodes_and_fields_files(node_files_set, fields_dir, D, Y, n_cores, i_frame; has_ω = true, has_vol = true)
-    fields_set = read_fields_files(fields_dir, D, Y, n_cores, i_frame; has_ω = has_ω, has_vol = has_vol)
+function read_nodes_and_fields_files(node_files_set, fields_dir, D, Y, n_cores, i_frame; has_ω = true, has_vol = true, has_moving_frame = true)
+    fields_set = read_fields_files(fields_dir, D, Y, n_cores, i_frame; has_ω = has_ω, has_vol = has_vol, has_moving_frame = has_moving_frame)
     return stitch_node_sets(node_files_set, fields_set)
 end
 
